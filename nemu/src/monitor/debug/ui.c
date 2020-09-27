@@ -28,7 +28,7 @@ char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-	cpu_exec(0);
+	cpu_exec(0xffff);
 	return 0;
 }
 
