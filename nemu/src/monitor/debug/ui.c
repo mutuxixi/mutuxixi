@@ -27,6 +27,24 @@ char* rl_gets() {
 	return line_read;
 }
 
+static int cmd_si(char *args) {
+	char *arg = strtok(NULL, " ");
+	int num = 0;
+	if(arg==NULL)
+	{
+		/* if N isn't give,  make one step */
+		cpu_exec(1);
+	}
+	else
+	{
+		sscanf(arg,"%d",&num);
+		int i;
+		for(i = 0;i < num; ++i)
+			cpu_exec(1);
+	}
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -46,7 +64,7 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-
+	{ "si", "Make one step", cmd_si },
 	/* TODO: Add more commands */
 
 };
