@@ -38,9 +38,7 @@ static int cmd_si(char *args) {
 	else
 	{
 		sscanf(arg,"%d",&num);
-		int i;
-		for(i = 0;i < num; ++i)
-			cpu_exec(1);
+		cpu_exec(num);
 	}
 	return 0;
 }
