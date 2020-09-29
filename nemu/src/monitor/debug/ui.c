@@ -30,7 +30,7 @@ char* rl_gets() {
 static int cmd_si(char *args) {
 	char *arg = strtok(NULL, " ");
 	int num = 0;
-	if(arg==NULL)
+	if(arg == NULL)
 	{
 		/* if N isn't give,  make one step */
 		cpu_exec(1);
@@ -39,6 +39,25 @@ static int cmd_si(char *args) {
 	{
 		sscanf(arg,"%d",&num);
 		cpu_exec(num);
+	}
+	return 0;
+}
+
+static int cmd_info(char *args) {
+	char *arg = strtok(NULL, " ");
+	char op;
+	if(arg == NULL)
+		printf("error! you need to input: info r/w\n");
+	else
+	{
+		sscanf(arg,"%c",&op);
+		if(op == 'r')
+		{
+			printf("eip\t%x\t%d\n",cpu.eip,cpu.eip);
+			int i;
+			for(i = 0;i < 8; ++i)
+				printf("%s\t%08x\t%d\n",regsl[i],cpu.gpr[i]._32,cpu.gpr[i]._32);
+		}
 	}
 	return 0;
 }
@@ -63,6 +82,8 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Make one step", cmd_si },
+	{ "info", "Get information from reg", cmd_info },
+
 	/* TODO: Add more commands */
 
 };
