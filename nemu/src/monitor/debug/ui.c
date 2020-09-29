@@ -29,7 +29,7 @@ char* rl_gets() {
 
 static int cmd_si(char *args) {
 	char *arg = strtok(NULL, " ");
-	int num = 0;
+	uint32_t num = 0;
 	if(arg == NULL)
 	{
 		/* if N isn't give,  make one step */
@@ -37,7 +37,7 @@ static int cmd_si(char *args) {
 	}
 	else
 	{
-		sscanf(arg,"%d",&num);
+		sscanf(arg,"%u",&num);
 		cpu_exec(num);
 	}
 	return 0;
@@ -47,7 +47,7 @@ static int cmd_info(char *args) {
 	char *arg = strtok(NULL, " ");
 	char op;
 	if(arg == NULL)
-		printf("error! you need to input: info r/w\n");
+		printf("Error! You need to input like this: info r/w\n");
 	else
 	{
 		sscanf(arg,"%c",&op);
@@ -73,6 +73,27 @@ static int cmd_info(char *args) {
 	return 0;
 }
 
+static int cmd_x(char *args) {
+	char *arg1 = strtok(NULL, " "),*arg2 = strtok(NULL, " ");
+	uint32_t num,pos;
+	if(arg1 == NULL || arg2 == NULL)
+		printf("Error! You need to input like this: x 10 0x100000\n");
+	else
+	{
+		sscanf(arg1,"%u",&num);
+		sscanf(arg2,"%x",&pos);
+		printf("0x%08x:\t",pos);
+		int i;
+		for(i = 0;i < num; ++i)
+		{
+			printf("%08x\t",pos);
+			pos += 4;
+		}
+		puts("");
+	}
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -94,7 +115,7 @@ static struct {
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Make one step", cmd_si },
 	{ "info", "Get information from reg", cmd_info },
-
+	{ "x", "Scanf memory", cmd_x},
 	/* TODO: Add more commands */
 
 };
