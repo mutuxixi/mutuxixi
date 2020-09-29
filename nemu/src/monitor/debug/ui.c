@@ -56,7 +56,12 @@ static int cmd_info(char *args) {
 			printf("eip\t%x\t%d\n",cpu.eip,cpu.eip);
 			int i;
 			for(i = 0;i < 8; ++i)
-				printf("%s\t%08x\t%d\n",regsl[i],cpu.gpr[i]._32,cpu.gpr[i]._32);
+				printf("%s\t0x%08x\t%d\n",regsl[i],cpu.gpr[i]._32,cpu.gpr[i]._32);
+			puts("");
+			for(i = 0;i < 8; ++i)
+				printf("%s\t0x%08x\t%d\n",regsw[i],cpu.gpr[i]._16,cpu.gpr[i]._16);
+			puts("");
+			
 		}
 	}
 	return 0;
