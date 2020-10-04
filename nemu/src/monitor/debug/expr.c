@@ -21,15 +21,14 @@ static struct rule {
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
-
+        {"[0-9]+", '0'},                                // natrual number
+        {"-[0-9]+", '1'},                               // negative
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
 	{"==", EQ},						// equal
 	{"\\*", '*'},					// multiply
 	{"-", '-'},					// minus
 	{"/", '/'},					// divide
-	{"[0-9]+", '0'},				// natrual number
-	{"-[0-9]+", '1'},				// negative
 	{"\\(", '('},					// left barket
 	{"\\)", ')'}					// right barket
 
