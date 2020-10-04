@@ -193,6 +193,7 @@ uint32_t eval(int p,int q) {
 		return temp;
 	}
 	else if(check_parentheses(p,q) == true) {
+		/* just throw away parentheses */
 		return eval(p + 1,q - 1);
 	}
 	else {
