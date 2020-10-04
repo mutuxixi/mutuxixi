@@ -86,7 +86,7 @@ static int cmd_x(char *args) {
 		int i;
 		for(i = 0;i < num; ++i)
 		{
-			printf("0x%08x\t",pos);
+			printf("0x%08x\t",swaddr_read(pos,4));
 			pos += 4;
 		}
 		puts("");
