@@ -92,6 +92,15 @@ static int cmd_x(char *args) {
 	return 0;
 }
 
+static int cmd_p(char *args) {
+	char *arg = strtok(NULL, " ");
+	bool judge = 1;
+	uint32_t ANS = expr(arg,&judge);
+	if(judge)
+		printf("%u\n",ANS);
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -114,6 +123,7 @@ static struct {
 	{ "si", "Make one step", cmd_si },
 	{ "info", "Get information from reg", cmd_info },
 	{ "x", "Scanf memory", cmd_x},
+	{ "p", "Calculation", cmd_p},
 	/* TODO: Add more commands */
 
 };

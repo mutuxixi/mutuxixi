@@ -24,7 +24,15 @@ static struct rule {
 
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
-	{"==", EQ}						// equal
+	{"==", EQ},						// equal
+	{"\\*", '*'},					// multiply
+	{"-", '-'},					// minus
+	{"/", '/'},					// divide
+	{"[0-9]*", '0'},				// natrual number
+	{"-[0-9]+", '1'},				// negative
+	{"\\(", '('},					// left barket
+	{"\\)", ')'}					// right barket
+
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -77,11 +85,59 @@ static bool make_token(char *e) {
 				 * to record the token in the array `tokens'. For certain types
 				 * of tokens, some extra actions should be performed.
 				 */
-
-				switch(rules[i].token_type) {
-					default: panic("please implement me");
+				if(substr_len > 32) {
+					/* make sure substr_len <= 32 */
+					printf("Waring! token's len exceeds 32\n");
+					assert(0);
 				}
 
+				switch(rules[i].token_type) {
+					case '+':
+					{
+						tokens[nr_token].type = rules[i].token_type;
+						break;
+					}
+					case '-':
+                                        {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                break;
+                                        }
+					case '*':
+                                        {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                break;
+                                        }
+					case '/':
+                                        {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                break;
+                                        }
+					case '(':
+                                        {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                break;
+                                        }
+					case ')':
+                                        {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                break;
+                                        }
+					case '0':
+					{
+						tokens[nr_token].type = rules[i].token_type;
+						int j;
+						for(j = 0;j < substr_len; ++j)
+							tokens[nr_token].str[j] = substr_start[j];
+						break;
+					}
+					case '1':
+					{
+						assert(0);
+						break;
+					}
+					default: panic("please implement me");
+				}
+				++nr_token;
 				break;
 			}
 		}
@@ -95,12 +151,92 @@ static bool make_token(char *e) {
 	return true; 
 }
 
+bool check_parentheses(int p, int q) {
+	int i, cnt=0, judge=0;
+	for(i = p;i <= q; ++i) {
+		if(tokens[i].type == '(')
+			++cnt;
+		if(tokens[i].type == ')')
+			--cnt;
+		if(cnt == 0)
+			++judge;
+		if(cnt < 0) {
+			printf("Bad expression!\n");
+			assert(0);
+		}
+	}
+	if(cnt != 0) {
+		printf("Bad expression!\n");
+		assert(0);
+	}
+	if(tokens[p].type == '(' && tokens[q].type == ')' && judge == 1)
+		return 1;
+	return 0;
+}
+
+uint32_t eval(int p,int q) {
+	if(p > q) {
+		printf("Bad expression!\n");
+		assert(0);
+	}
+	else if(p == q) {
+		uint32_t temp;
+		sscanf(tokens[p].str, "%u", &temp);
+		return temp;
+	}
+	else if(check_parentheses(p,q) == true) {
+		return eval(p + 1,q - 1);
+	}
+	else {
+		int op,val1,val2;
+		int i,tmp[32],cnt = 0;
+		for(i = p;i <= q; ++i) {
+			if(tokens[i].type == '(') {
+				int j,judge = 1;
+				for(j = i + 1;j <= q; ++j) {
+					if(tokens[j].type == '(')
+						++judge;
+					if(tokens[j].type == ')')
+						--judge;
+					if(!judge) {
+						i = j;
+						break;
+					}
+				}
+				continue;
+			}
+			if(tokens[i].type == '+' || tokens[i].type == '-' || tokens[i].type == '*' || tokens[i].type == '/')
+				tmp[cnt++]=i;
+		}
+		op = tmp[cnt-1];
+		for(i = cnt-2;i >= 0; --i) {
+			if(tokens[op].type == '+' || tokens[op].type == '-')
+				break;
+			if(tokens[tmp[i]].type == '+' || tokens[tmp[i]].type == '-') {
+				op = tmp[i];
+				break;
+			}
+		}
+		val1 = eval(p, op - 1);
+		val2 = eval(op + 1, q);
+		switch (tokens[op].type) {
+			case '+' : return val1 + val2;
+                        case '-' : return val1 - val2;
+                        case '*' : return val1 * val2;
+                        case '/' : return val1 / val2;
+			default : assert(0);
+		}
+	}
+}
+
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
-
+	uint32_t ans = eval(0, nr_token - 1);
+	return ans;
+		
 	/* TODO: Insert codes to evaluate the expression. */
 	panic("please implement me");
 	return 0;
