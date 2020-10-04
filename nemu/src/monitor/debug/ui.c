@@ -93,6 +93,10 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
+	if(args == NULL) {
+		printf("Error! You need to input like this: p 1+2\n");
+		return 0;
+	}
 	bool judge = 1;
 	uint32_t ANS = expr(args,&judge);
 	if(judge)
