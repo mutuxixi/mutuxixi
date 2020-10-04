@@ -96,32 +96,32 @@ static bool make_token(char *e) {
 						break;
 					case '+':
 					{
-						tokens[nr_token].type = rules[i].token_type;
+						tokens[nr_token++].type = rules[i].token_type;
 						break;
 					}
 					case '-':
                                         {
-                                                tokens[nr_token].type = rules[i].token_type;
+                                                tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
 					case '*':
                                         {
-                                                tokens[nr_token].type = rules[i].token_type;
+                                                tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
 					case '/':
                                         {
-                                                tokens[nr_token].type = rules[i].token_type;
+                                                tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
 					case '(':
                                         {
-                                                tokens[nr_token].type = rules[i].token_type;
+                                                tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
 					case ')':
                                         {
-                                                tokens[nr_token].type = rules[i].token_type;
+                                                tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
 					case '0':
@@ -130,6 +130,7 @@ static bool make_token(char *e) {
 						int j;
 						for(j = 0;j < substr_len; ++j)
 							tokens[nr_token].str[j] = substr_start[j];
+						++nr_token;
 						break;
 					}
 					case '1':
@@ -139,7 +140,6 @@ static bool make_token(char *e) {
 					}
 					default: panic("please implement me");
 				}
-				++nr_token;
 				break;
 			}
 		}
@@ -190,8 +190,8 @@ uint32_t eval(int p,int q) {
 		return eval(p + 1,q - 1);
 	}
 	else {
-		int op,val1,val2;
-		int i,tmp[32],cnt = 0;
+		uint32_t val1,val2;
+		int op,i,tmp[32],cnt = 0;
 		for(i = p;i <= q; ++i) {
 			if(tokens[i].type == '(') {
 				int j,judge = 1;
