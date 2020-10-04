@@ -22,7 +22,7 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
         {"[0-9]+", '0'},                                // natrual number
-        {"-[0-9]+", '1'},                               // negative
+//        {"-[0-9]+", '1'},                               // negative
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
 	{"==", EQ},						// equal
