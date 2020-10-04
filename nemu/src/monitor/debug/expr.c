@@ -90,7 +90,7 @@ static bool make_token(char *e) {
 					printf("Waring! token's len exceeds 32\n");
 					assert(0);
 				}
-
+assert(0);
 				switch(rules[i].token_type) {
 					case 256 :
 						break;
