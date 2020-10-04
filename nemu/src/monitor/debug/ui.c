@@ -93,9 +93,8 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
-	char *arg = strtok(NULL, " ");
 	bool judge = 1;
-	uint32_t ANS = expr(arg,&judge);
+	uint32_t ANS = expr(args,&judge);
 	if(judge)
 		printf("%u\n",ANS);
 	return 0;

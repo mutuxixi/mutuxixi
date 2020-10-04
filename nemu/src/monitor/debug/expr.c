@@ -91,7 +91,7 @@ static bool make_token(char *e) {
 					assert(0);
 				}
 				switch(rules[i].token_type) {
-					case 256 :
+					case NOTYPE :
 						break;
 					case '+':
 					{
