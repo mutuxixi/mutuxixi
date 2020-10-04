@@ -128,11 +128,11 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = rules[i].token_type;
 						int j;
 						for(j = 0;j < 32; ++j)
-							tokens[nr_token].str[j] = 0;
+							tokens[nr_token].str[j] = '0';
 						for(j = 0;j < substr_len; ++j)
 							tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
 						for(;j < 32; ++j)
-							tokens[nr_token].str[31 - j] =  0;
+							tokens[nr_token].str[31 - j] = '0';
 						++nr_token;
 						break;
 					}
