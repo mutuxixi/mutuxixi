@@ -235,6 +235,13 @@ long long eval(int p,int q) {
 
 void Init_minus() {
 	int i;
+	if(tokens[0].type == '-') {
+                for(i = nr_token; i >= 2; --i)
+                        tokens[i] = tokens[i - 1];
+                tokens[0].type = negative;
+                tokens[1].type = '*';
+                ++nr_token;
+        }
 	for(i = 0;i < nr_token; ++i) {
 		if(tokens[i].type == '-') {
 			if(tokens[i - 1].type == '+' || tokens[i - 1].type == '-' || tokens[i - 1].type == '*' || tokens[i - 1].type == '/' || tokens[i - 1].type == '(') {
@@ -254,17 +261,8 @@ uint32_t expr(char *e, bool *success) {
 		*success = false;
 		return 0;
 	}
-	long long ans;
-	if(tokens[0].type == '-') {
-		int i;
-		for(i = nr_token; i >= 2; --i)
-			tokens[i] = tokens[i - 1];
-		tokens[0].type = negative;
-		tokens[1].type = '*';
-		++nr_token;
-	}
 	Init_minus();
-	ans = eval(0, nr_token - 1);
+	long long ans = eval(0, nr_token - 1);
 	return ans;
 
 	/* TODO: Insert codes to evaluate the expression. */
