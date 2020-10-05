@@ -100,7 +100,7 @@ static int cmd_p(char *args) {
 	bool judge = 1;
 	uint32_t ANS = expr(args,&judge);
 	if(judge)
-		printf("%u\n",ANS);
+		printf("%d\n",ANS);
 	return 0;
 }
 
