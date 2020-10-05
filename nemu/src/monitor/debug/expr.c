@@ -21,16 +21,15 @@ static struct rule {
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
-        {"[0-9]+", '0'},                                // natrual number
-//        {"-[0-9]+", '1'},                               // negative
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
 	{"==", EQ},						// equal
 	{"\\*", '*'},					// multiply
-	{"-", '-'},					// minus
+	{"-[^0-9]", '-'},				// minus
 	{"/", '/'},					// divide
 	{"\\(", '('},					// left barket
-	{"\\)", ')'}					// right barket
+	{"\\)", ')'},					// right barket
+        {"-?[0-9]+", '0'},                              // number
 
 };
 
@@ -128,9 +127,16 @@ static bool make_token(char *e) {
 						int j;
 						for(j = 0;j < 32; ++j)
 							tokens[nr_token].str[j] = '0';
-						for(j = 0;j < substr_len; ++j)
+						for(j = 0;j < substr_len - 1; ++j)
 							tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
-						for(;j < 32; ++j)
+						if(substr_start[0] == '-')
+							tokens[nr_token].str[0] = '-';
+						else {
+							tokens[nr_token].str[0] = '+';
+							tokens[nr_token].str[31 - j] = substr_start[0];
+							++j;
+						}
+						for(;j < 31; ++j)
 							tokens[nr_token].str[31 - j] = '0';
 						++nr_token;
 						break;
@@ -156,7 +162,7 @@ static bool make_token(char *e) {
 }
 
 bool check_parentheses(int p, int q) {
-	int i, cnt=0, judge=0;
+	int i, cnt = 0, judge = 0;
 	for(i = p;i <= q; ++i) {
 		if(tokens[i].type == '(')
 			++cnt;
@@ -178,17 +184,19 @@ bool check_parentheses(int p, int q) {
 	return 0;
 }
 
-uint32_t eval(int p,int q) {
+long long eval(int p,int q) {
 	if(p > q) {
 		printf("Bad expression!\n");
 		assert(0);
 	}
 	else if(p == q) {
 		/* Single token, it should be a num */
-		uint32_t temp = 0;
+		long long temp = 0;
 		int i;
-		for(i = 0;i < 32; ++i)
-			temp = temp * 10 + (uint32_t)(tokens[p].str[i] - '0');
+		for(i = 1;i < 32; ++i)
+			temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
+		if(tokens[p].str[0] == '-')
+			temp *= -1;
 		return temp;
 	}
 	else if(check_parentheses(p,q) == true) {
@@ -196,7 +204,7 @@ uint32_t eval(int p,int q) {
 		return eval(p + 1,q - 1);
 	}
 	else {
-		uint32_t val1,val2;
+		long long val1,val2;
 		int op,i,tmp[32],cnt = 0;
 		for(i = p;i <= q; ++i) {
 			if(tokens[i].type == '(') {
@@ -237,12 +245,12 @@ uint32_t eval(int p,int q) {
 	}
 }
 
-uint32_t expr(char *e, bool *success) {
+long long expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
-	uint32_t ans = eval(0, nr_token - 1);
+	long long ans = eval(0, nr_token - 1);
 	return ans;
 		
 	/* TODO: Insert codes to evaluate the expression. */
