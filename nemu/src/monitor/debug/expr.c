@@ -29,7 +29,7 @@ static struct rule {
 	{"/", '/'},					// divide
 	{"\\(", '('},					// left barket
 	{"\\)", ')'},					// right barket
-        {"-?[0-9]+", '0'},                              // number
+        {"-?([0-9]+)", '0'},                              // number
 
 };
 
