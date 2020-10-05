@@ -98,9 +98,9 @@ static int cmd_p(char *args) {
 		return 0;
 	}
 	bool judge = 1;
-	long long ANS = expr(args,&judge);
+	uint32_t ANS = expr(args,&judge);
 	if(judge)
-		printf("%lld\n",ANS);
+		printf("%d\n",ANS);
 	return 0;
 }
 
