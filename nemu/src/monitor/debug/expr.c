@@ -8,7 +8,7 @@
 
 enum {
 	NOTYPE = 256, EQ = 257,
-	negative = 258
+	negative = 258,
 	/* TODO: Add more token types */
 
 };
@@ -29,7 +29,7 @@ static struct rule {
 	{"/", '/'},					// divide
 	{"\\(", '('},					// left barket
 	{"\\)", ')'},					// right barket
-        {"[0-9]+", '0'},                              // number
+        {"[0-9]+", '0'},				// number
 
 };
 
@@ -178,18 +178,28 @@ long long eval(int p,int q) {
 		assert(0);
 	}
 	else if(p == q) {
-		/* Single token, it should be a num */
-		if(tokens[p].type == negative)
-			return -1;
+		/* Single token, it should be a number */
 		long long temp = 0;
 		int i;
 		for(i = 0;i < 32; ++i)
 			temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
 		return temp;
 	}
+	else if(p + 1 == q) {
+		/* Negative number */
+		long long temp = 0;
+                int i;
+                for(i = 0;i < 32; ++i)
+                        temp = temp * 10 + (long long) (tokens[q].str[i] - '0');
+                return -1 * temp;
+	}
 	else if(check_parentheses(p,q) == true) {
-		/* just throw away parentheses */
+		/* Just throw away parentheses */
 		return eval(p + 1,q - 1);
+	}
+	else if(tokens[p].type == negative && check_parentheses(p + 1,q) == true) {
+		/* Negative parentheses */
+		return -1 * eval(p + 2,q - 1);
 	}
 	else {
 		long long val1,val2;
@@ -235,23 +245,12 @@ long long eval(int p,int q) {
 
 void Init_minus() {
 	int i;
-	if(tokens[0].type == '-') {
-                for(i = nr_token; i >= 2; --i)
-                        tokens[i] = tokens[i - 1];
+	if(tokens[0].type == '-')
                 tokens[0].type = negative;
-                tokens[1].type = '*';
-                ++nr_token;
-        }
-	for(i = 0;i < nr_token; ++i) {
+	for(i = 1;i < nr_token; ++i) {
 		if(tokens[i].type == '-') {
-			if(tokens[i - 1].type == '+' || tokens[i - 1].type == '-' || tokens[i - 1].type == '*' || tokens[i - 1].type == '/' || tokens[i - 1].type == '(') {
-				int j;
-				for(j = nr_token;j >= i + 2; --j)
-					tokens[j] = tokens[j - 1];
+			if(tokens[i - 1].type == '+' || tokens[i - 1].type == '-' || tokens[i - 1].type == '*' || tokens[i - 1].type == '/' || tokens[i - 1].type == '(')
 				tokens[i].type = negative;
-				tokens[i + 1].type = '*';
-				++nr_token;
-			}
 		}
 	}
 }
