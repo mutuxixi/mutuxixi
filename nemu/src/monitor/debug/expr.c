@@ -235,11 +235,10 @@ bool check_parentheses(int p, int q) {
 	return 0;
 }
 
-long long eval(int p,int q,bool *success) {
+long long eval(int p,int q) {
 	if(p > q) {
 		printf("Bad expression!\n");
-		*success = false;
-		return 0;
+		assert(0);
 	}
 	else if(p == q) {
 		/* Single token, it should be a number */
@@ -274,7 +273,7 @@ long long eval(int p,int q,bool *success) {
 	}
 	else if(check_parentheses(p,q) == true) {
 		/* Just throw away parentheses */
-		return eval(p + 1,q - 1,success);
+		return eval(p + 1,q - 1);
 	}
 	else {
 		int i,op = -1,tmp[32],cnt = 0;
@@ -310,15 +309,15 @@ long long eval(int p,int q,bool *success) {
 		}
 		if(op == -1) {
 			if(tokens[p].type == negative)
-				return -1 * eval(p + 1,q,success);
+				return -1 * eval(p + 1,q);
 			else if(tokens[p].type == INV)
-				return !eval(p + 1,q,success);
+				return !eval(p + 1,q);
 			else if(tokens[p].type == DEREF)
-				return swaddr_read(eval(p + 1,q,success),4);
+				return swaddr_read(eval(p + 1,q),4);
 		}
 		long long val1, val2;
-		val1 = eval(p, op - 1,success);
-		val2 = eval(op + 1, q,success);
+		val1 = eval(p, op - 1);
+		val2 = eval(op + 1, q);
 		switch (tokens[op].type) {
 			case EQ  : return val1 == val2;
 			case NEQ : return val1 != val2;
@@ -366,7 +365,7 @@ uint32_t expr(char *e, bool *success) {
 
 	Init_minus();
 	Init_multiply();
-	return eval(0, nr_token - 1, success);
+	return eval(0, nr_token - 1);
 
 	/* TODO: Insert codes to evaluate the expression. */
 	panic("please implement me");
