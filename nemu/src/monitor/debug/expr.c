@@ -145,7 +145,7 @@ static bool make_token(char *e) {
                                                 break;
                                         }
                                         case REG: {
-                                                tokens[nr_token++].type = rules[i].token_type;
+                                                tokens[nr_token].type = rules[i].token_type;
 						int j;
 						if(substr_len == 4) {
 							for(j = 0;j < 8; ++j) {
