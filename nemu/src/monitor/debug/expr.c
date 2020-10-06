@@ -95,7 +95,7 @@ static bool make_token(char *e) {
 				if(substr_len > 32) {
 					/* make sure substr_len <= 32 */
 					printf("Waring! token's len exceeds 32\n");
-					assert(0);
+					return false;
 				}
 				switch(rules[i].token_type) {
 					case NOTYPE :
@@ -147,10 +147,33 @@ static bool make_token(char *e) {
                                         case REG: {
                                                 tokens[nr_token++].type = rules[i].token_type;
 						int j;
-						for(j = 0;j < 32; ++j)
-							tokens[nr_token].str[j] = '0';
-						for(j = 1;j < substr_len; ++j)
-							tokens[nr_token].str[j - 1] = substr_start[j];
+						if(substr_len == 4) {
+							for(j = 0;j < 8; ++j) {
+								if(strcmp(regsl[j], substr_start + 1) == 0) {
+									tokens[nr_token].str[0] = 1;
+									tokens[nr_token].str[1] = j;
+									break;
+								}
+							}
+							if(strcmp("eip", substr_start + 1) == 0) {
+								tokens[nr_token].str[0] = 4;
+								break;
+							}
+						}
+						else {
+							for(j = 0;j < 8; ++j) {
+								if(strcmp(regsw[j], substr_start + 1) == 0) {
+									tokens[nr_token].str[0] = 2;
+									tokens[nr_token].str[1] = j;
+									break;
+								}
+								if(strcmp(regsb[j], substr_start + 1) == 0) {
+                                                                        tokens[nr_token].str[0] = 3;
+                                                                        tokens[nr_token].str[1] = j;
+                                                                        break;
+                                                                }
+							}
+						}
 						++nr_token;
 						break;
                                         }
@@ -237,6 +260,16 @@ long long eval(int p,int q) {
 			for(i = 0;i < 32; ++i)
 				temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
 		}
+		else if(tokens[p].type == REG) {
+		/* REG */
+			switch (tokens[p].str[0]) {
+				case 1 : return reg_l(tokens[p].str[1]);
+                                case 2 : return reg_w(tokens[p].str[1]);
+                                case 3 : return reg_b(tokens[p].str[1]);
+                                case 4 : return cpu.eip;
+				default : assert(0);
+			}
+		}
 		return temp;
 	}
 	else if(check_parentheses(p,q) == true) {
@@ -280,6 +313,8 @@ long long eval(int p,int q) {
 				return -1 * eval(p + 1,q);
 			else if(tokens[p].type == INV)
 				return !eval(p + 1,q);
+			else if(tokens[p].type == DEREF)
+				return swaddr_read(eval(p + 1,q),4);
 		}
 		long long val1, val2;
 		val1 = eval(p, op - 1);
