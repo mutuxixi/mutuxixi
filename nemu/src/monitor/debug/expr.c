@@ -8,7 +8,10 @@
 
 enum {
 	NOTYPE = 256, EQ = 257,
-	negative = 258,
+	negative = 258, NEQ = 259,
+	h_num = 260, d_num = 261,
+	AND = 262, OR = 263,
+	INV = 264, DEREF = 265, REG = 266,
 	/* TODO: Add more token types */
 
 };
@@ -21,15 +24,21 @@ static struct rule {
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
-	{" +",	NOTYPE},				// spaces
-	{"\\+", '+'},					// plus
+        {" +",  NOTYPE},                                // spaces
+	{"0x[0-9]+", h_num},				// hexadecimal-number
+        {"[0-9]+", d_num},                              // decimal-number
+	{"$[a-z]+", REG},				// REG
 	{"==", EQ},						// equal
+	{"!=", NEQ},						// not equal
+	{"&&", AND},						// AND
+	{"||", OR},						// OR
+	{"!", INV},						// INV
+        {"\\+", '+'},                                   // plus
 	{"\\*", '*'},					// multiply
 	{"-", '-'},					// minus
 	{"/", '/'},					// divide
 	{"\\(", '('},					// left barket
 	{"\\)", ')'},					// right barket
-        {"[0-9]+", '0'},				// number
 
 };
 
@@ -91,38 +100,73 @@ static bool make_token(char *e) {
 				switch(rules[i].token_type) {
 					case NOTYPE :
 						break;
-					case '+':
-					{
+					case '+': {
 						tokens[nr_token++].type = rules[i].token_type;
 						break;
 					}
-					case '-':
-                                        {
+					case '-': {
                                                 tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
-					case '*':
-                                        {
+					case '*': {
                                                 tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
-					case '/':
-                                        {
+					case '/': {
                                                 tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
-					case '(':
-                                        {
+					case '(': {
                                                 tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
-					case ')':
-                                        {
+					case ')': {
                                                 tokens[nr_token++].type = rules[i].token_type;
                                                 break;
                                         }
-					case '0':
-					{
+                                        case EQ: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+                                                break;
+                                        }
+                                        case NEQ: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+                                                break;
+                                        }
+                                        case AND: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+                                                break;
+                                        }
+                                        case OR: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+                                                break;
+                                        }
+                                        case INV: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+                                                break;
+                                        }
+                                        case REG: {
+                                                tokens[nr_token++].type = rules[i].token_type;
+						int j;
+						for(j = 0;j < 32; ++j)
+							tokens[nr_token].str[j] = '0';
+						for(j = 1;j < substr_len; ++j)
+							tokens[nr_token].str[j - 1] = substr_start[j];
+						++nr_token;
+						break;
+                                        }
+                                        case h_num: {
+                                                tokens[nr_token].type = rules[i].token_type;
+                                                int j;
+                                                for(j = 0;j < 32; ++j)
+                                                        tokens[nr_token].str[j] = '0';
+                                                for(j = 0;j < substr_len - 2; ++j)
+                                                        tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
+                                                for(;j < 32; ++j)
+                                                        tokens[nr_token].str[31 - j] = '0';
+                                                ++nr_token;
+                                                break;
+                                        }
+					case d_num: {
 						tokens[nr_token].type = rules[i].token_type;
 						int j;
 						for(j = 0;j < 32; ++j)
@@ -139,13 +183,11 @@ static bool make_token(char *e) {
 				break;
 			}
 		}
-
 		if(i == NR_REGEX) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
 			return false;
 		}
 	}
-
 	return true; 
 }
 
@@ -181,29 +223,28 @@ long long eval(int p,int q) {
 		/* Single token, it should be a number */
 		long long temp = 0;
 		int i;
-		for(i = 0;i < 32; ++i)
-			temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
+		if(tokens[p].type == h_num) {
+		/* Hexadecimal-number */
+			for(i = 0;i < 32; ++i) {
+				if(tokens[p].str[i] <= '9' && tokens[p].str[i] >= '0')
+					temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
+				else
+					temp = temp * 10 + (long long)(tokens[p].str[i] - 'a' + 10);
+			}
+		}
+		else if(tokens[p].type == d_num) {
+		/* Decimal-number */
+			for(i = 0;i < 32; ++i)
+				temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
+		}
 		return temp;
-	}
-	else if(p + 1 == q) {
-		/* Negative number */
-		long long temp = 0;
-                int i;
-                for(i = 0;i < 32; ++i)
-                        temp = temp * 10 + (long long) (tokens[q].str[i] - '0');
-                return -1 * temp;
 	}
 	else if(check_parentheses(p,q) == true) {
 		/* Just throw away parentheses */
 		return eval(p + 1,q - 1);
 	}
-	else if(tokens[p].type == negative && check_parentheses(p + 1,q) == true) {
-		/* Negative parentheses */
-		return -1 * eval(p + 2,q - 1);
-	}
 	else {
-		long long val1,val2;
-		int op,i,tmp[32],cnt = 0;
+		int i,op = -1,tmp[32],cnt = 0;
 		for(i = p;i <= q; ++i) {
 			if(tokens[i].type == '(') {
 				int j,judge = 1;
@@ -213,30 +254,44 @@ long long eval(int p,int q) {
 					if(tokens[j].type == ')')
 						--judge;
 					if(!judge) {
-						i = j;
+						i = j + 1;
 						break;
 					}
 				}
-				continue;
 			}
 			if(tokens[i].type == '+' || tokens[i].type == '-' || tokens[i].type == '*' || tokens[i].type == '/')
 				tmp[cnt++]=i;
+			if(tokens[i].type == EQ || tokens[i].type == NEQ || tokens[i].type == AND || tokens[i].type == OR)
+				op = i;
 		}
-		op = tmp[cnt - 1];
-		for(i = cnt-2;i >= 0; --i) {
-			if(tokens[op].type == '+' || tokens[op].type == '-')
-				break;
-			if(tokens[tmp[i]].type == '+' || tokens[tmp[i]].type == '-') {
-				op = tmp[i];
-				break;
+		if(op == -1 && cnt) {
+			op = tmp[cnt - 1];
+			if(tokens[op].type != '+' && tokens[op].type != '-') {
+				for(i = cnt-2;i >= 0; --i) {
+					if(tokens[tmp[i]].type == '+' || tokens[tmp[i]].type == '-') {
+						op = tmp[i];
+						break;
+					}
+				}
 			}
 		}
+		if(op == -1) {
+			if(tokens[p].type == negative)
+				return -1 * eval(p + 1,q);
+			else if(tokens[p].type == INV)
+				return !eval(p + 1,q);
+		}
+		long long val1, val2;
 		val1 = eval(p, op - 1);
 		val2 = eval(op + 1, q);
 		switch (tokens[op].type) {
+			case EQ  : return val1 == val2;
+			case NEQ : return val1 != val2;
+			case AND : return val1 && val2;
+			case OR  : return val1 || val2;
 			case '+' : return val1 + val2;
-                        case '-' : return val1 - val2;
-                        case '*' : return val1 * val2;
+       	                case '-' : return val1 - val2;
+       	                case '*' : return val1 * val2;
                         case '/' : return val1 / val2;
 			default : assert(0);
 		}
@@ -249,20 +304,34 @@ void Init_minus() {
                 tokens[0].type = negative;
 	for(i = 1;i < nr_token; ++i) {
 		if(tokens[i].type == '-') {
-			if(tokens[i - 1].type == '+' || tokens[i - 1].type == '-' || tokens[i - 1].type == '*' || tokens[i - 1].type == '/' || tokens[i - 1].type == '(')
+			if(tokens[i - 1].type != d_num && tokens[i - 1].type != h_num && tokens[i - 1].type != REG && tokens[i - 1].type != ')')
 				tokens[i].type = negative;
 		}
 	}
 }
+
+void Init_multiply() {
+        int i;
+        if(tokens[0].type == '*')
+                tokens[0].type = DEREF;
+        for(i = 1;i < nr_token; ++i) {
+                if(tokens[i].type == '*') {
+                        if(tokens[i - 1].type != d_num && tokens[i - 1].type != h_num && tokens[i - 1].type != REG && tokens[i - 1].type == ')')
+                                tokens[i].type = DEREF;
+                }
+        }
+}
+
 
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
+
 	Init_minus();
-	long long ans = eval(0, nr_token - 1);
-	return ans;
+	Init_multiply();
+	return eval(0, nr_token - 1);
 
 	/* TODO: Insert codes to evaluate the expression. */
 	panic("please implement me");
