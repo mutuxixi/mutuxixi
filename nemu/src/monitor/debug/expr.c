@@ -261,7 +261,6 @@ long long eval(int p,int q) {
 		else if(tokens[p].type == REG) {
 		/* REG */
 			int CMP = tokens[p].str[0] - '0', Index = tokens[p].str[1] - '0';
-                        printf("CMP: %d Index: %d\n",CMP,Index);
 			switch (CMP) {
 				case 1 : temp =  reg_l(Index);break;
                                 case 2 : temp =  reg_w(Index);break;
@@ -269,7 +268,6 @@ long long eval(int p,int q) {
                                 case 4 : temp =  cpu.eip;break;
 				default : assert(0);
 			}
-			printf("CMP: %d Index: %d\n",CMP,Index);
 		}
 		return temp;
 	}
@@ -367,7 +365,6 @@ uint32_t expr(char *e, bool *success) {
 
 	Init_minus();
 	Init_multiply();
-	printf("nr_token: %d\n",nr_token);
 	return eval(0, nr_token - 1);
 
 	/* TODO: Insert codes to evaluate the expression. */
