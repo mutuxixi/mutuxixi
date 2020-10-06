@@ -25,7 +25,7 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
         {" +",  NOTYPE},                                // spaces
-	{"0x[0-9]+", h_num},				// hexadecimal-number
+	{"0x[a-z,0-9]+", h_num},			// hexadecimal-number
         {"[0-9]+", d_num},                              // decimal-number
 	{"\\$[a-z]+", REG},				// REG
 	{"==", EQ},						// equal
@@ -227,9 +227,9 @@ long long eval(int p,int q) {
 		/* Hexadecimal-number */
 			for(i = 0;i < 32; ++i) {
 				if(tokens[p].str[i] <= '9' && tokens[p].str[i] >= '0')
-					temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
+					temp = temp * 16 + (long long)(tokens[p].str[i] - '0');
 				else
-					temp = temp * 10 + (long long)(tokens[p].str[i] - 'a' + 10);
+					temp = temp * 16 + (long long)(tokens[p].str[i] - 'a' + 10);
 			}
 		}
 		else if(tokens[p].type == d_num) {
