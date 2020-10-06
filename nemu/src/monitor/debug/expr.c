@@ -31,7 +31,7 @@ static struct rule {
 	{"==", EQ},						// equal
 	{"!=", NEQ},						// not equal
 	{"&&", AND},						// AND
-	{"||", OR},						// OR
+	{"\\|\\|", OR},						// OR
 	{"!", INV},						// INV
         {"\\+", '+'},                                   // plus
 	{"\\*", '*'},					// multiply
