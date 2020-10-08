@@ -74,14 +74,19 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	char *arg1 = strtok(NULL, " "),*arg2 = strtok(NULL, " ");
+	char *arg1 = strtok(NULL, " "),*arg2 = strtok(NULL, "");
 	uint32_t num,pos;
+	bool judge = 1;
 	if(arg1 == NULL || arg2 == NULL)
 		printf("Error! You need to input like this: x 10 0x100000\n");
 	else
 	{
 		sscanf(arg1,"%u",&num);
-		sscanf(arg2,"%x",&pos);
+		pos=expr(arg2,&judge);
+		if(!judge) {
+			printf("Error! Please check your expr!\n");
+			return 0;
+		}
 		int i;
 		for(i = 0;i < num; ++i)
 		{
