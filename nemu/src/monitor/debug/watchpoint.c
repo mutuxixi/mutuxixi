@@ -85,10 +85,10 @@ void info_watchpoint() {
 		printf("There is no watchpoint!\n");
 		return ;
 	}
-	printf("No.\tValue\tExpr\n");
+	printf("NO.\tVALUE\t\tEXPR\n");
 	WP *p;
 	for(p = head;p != NULL;p = p -> next) {
-		printf("%d\t%d\t%s\n",p -> NO,p -> value,p -> str);
+		printf("%d\t%16d%s\n",p -> NO,p -> value,p -> str);
 	}
 }
 
