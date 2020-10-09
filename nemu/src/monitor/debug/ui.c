@@ -125,7 +125,7 @@ static int cmd_w(char *args) {
 	WP *tmp = new_wp();
 	tmp -> str = args;
 	tmp -> temp = temp;
-	printf("New watchpoint NO%d is created\n",tmp -> NO);
+	printf("New watchpoint NO.%d is created\n",tmp -> NO);
 	return 0;
 }
 
