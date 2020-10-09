@@ -368,7 +368,7 @@ uint32_t expr(char *e, bool *success) {
 	return eval(0, nr_token - 1);
 
 	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
-	return 0;
+//	panic("please implement me");
+//	return 0;
 }
 
