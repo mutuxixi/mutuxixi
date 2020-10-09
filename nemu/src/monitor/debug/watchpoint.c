@@ -20,7 +20,7 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-WP* new_wp(bool *success) {
+WP *new_wp(bool *success) {
 	WP *ans;
 	if(free_ == NULL) {
 		printf("Not enough free wp!\n");
@@ -62,6 +62,32 @@ void free_wp(int ID) {
 			q = q -> next;
 		q -> next = p;
 		p -> next = NULL;
+	}
+	printf("Watchpoint NO.%d is deleted\n",ID);
+}
+
+bool check_watchpoint() {
+	uint32_t Cmp;
+	bool judge = 1;
+	WP *p;
+	for(p = head;p != NULL;p = p-> next) {
+		Cmp = expr(p -> str, &judge);
+		if(Cmp != p -> value) {
+			printf("Stop at watchpoint NO.%d\n",p -> NO);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void info_watchpoint() {
+	if(head == NULL) {
+		printf("There is no watchpoint!\n");
+		return ;
+	}
+	WP *p;
+	for(p = head;p != NULL;p = p -> next) {
+		
 	}
 }
 

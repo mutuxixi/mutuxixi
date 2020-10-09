@@ -8,8 +8,6 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
-WP *new_wp(bool *success);
-void free_wp(int ID);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -69,8 +67,11 @@ static int cmd_info(char *args) {
 			for(i = 4;i < 8; ++i)
 				printf("%s\t0x%-8x\t%d\n",regsb[i],cpu.gpr[i-4]._8[1],cpu.gpr[i-4]._8[1]);
 			puts("");
-			
 		}
+		else if(op == 'w')
+			info_watchpoint();
+		else
+			printf("Error! You need to input like this: info r/w\n");
 	}
 	return 0;
 }
@@ -126,7 +127,7 @@ static int cmd_w(char *args) {
 	if(!judge)
 		return 0;
 	tmp -> str = args;
-	tmp -> temp = temp;
+	tmp -> value = temp;
 	printf("New watchpoint NO.%d is created\n",tmp -> NO);
 	return 0;
 }
