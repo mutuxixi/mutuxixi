@@ -128,11 +128,11 @@ static int cmd_w(char *args) {
 		return 0;
 	int i, Len;
 	Len = strlen(args);
-	if(Len > 32) {
+	if(Len > 64) {
 		printf("Expr's len is too long!\n");
 		return 0;
 	}
-	for(i = 0;i < 32; ++i)
+	for(i = 0;i < 64; ++i)
 		tmp -> str[i] = '\0';
 	for(i = 0;i < Len; ++i)
 		tmp -> str[i] = args[i];
