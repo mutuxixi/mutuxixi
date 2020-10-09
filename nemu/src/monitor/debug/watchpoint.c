@@ -87,8 +87,7 @@ void info_watchpoint() {
 	}
 	printf("NO.\tVALUE\t\tEXPR\n");
 	WP *p;
-	for(p = head;p != NULL;p = p -> next) {
-		printf("%d\t%16d%s\n",p -> NO,p -> value,p -> str);
-	}
+	for(p = head;p != NULL;p = p -> next)
+		printf("%d\t%-16d%s\n",p -> NO,p -> value,p -> str);
 }
 
