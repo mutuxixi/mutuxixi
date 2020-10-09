@@ -8,6 +8,8 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
+WP *new_wp();
+void free_wp(WP *wp);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -109,6 +111,24 @@ static int cmd_p(char *args) {
 	return 0;
 }
 
+static int cmd_w(char *args) {
+	if(args == NULL) {
+		printf("Error! You need to input like this: w *0x2000\n");
+		return 0;
+	}
+	bool judge = 1;
+	uint32_t temp = expr(args, &judge);
+	if(!judge) {
+		printf("Error! New watchpoint isn't created!\n");
+		return 0;
+	}
+	WP *tmp = new_wp();
+	tmp -> str = args;
+	tmp -> temp = temp;
+	printf("New watchpoint NO%d is created\n",tmp -> NO);
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -132,6 +152,7 @@ static struct {
 	{ "info", "Get information from reg", cmd_info },
 	{ "x", "Scanf memory", cmd_x},
 	{ "p", "Calculation", cmd_p},
+	{ "w", "Set watchpoint", cmd_w},
 	/* TODO: Add more commands */
 
 };
