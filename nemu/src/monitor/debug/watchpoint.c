@@ -24,7 +24,7 @@ WP *new_wp(bool *success) {
 	WP *ans;
 	if(free_ == NULL) {
 		printf("Not enough free wp!\n");
-		success = false;
+		*success = false;
 		return NULL;
 	}
 	ans = free_;
