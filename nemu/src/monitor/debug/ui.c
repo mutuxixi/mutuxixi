@@ -126,7 +126,16 @@ static int cmd_w(char *args) {
 	WP *tmp = new_wp(&judge);
 	if(!judge)
 		return 0;
-	tmp -> str = args;
+	int i, Len;
+	Len = strlen(args);
+	if(Len > 32) {
+		printf("Expr's len is too long!\n");
+		return 0;
+	}
+	for(i = 0;i < 32; ++i)
+		tmp -> str[i] = '\0';
+	for(i = 0;i < Len; ++i)
+		tmp -> str[i] = args[i];
 	tmp -> value = temp;
 	printf("New watchpoint NO.%d is created\n",tmp -> NO);
 	return 0;
