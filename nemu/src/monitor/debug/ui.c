@@ -8,8 +8,8 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
-WP *new_wp();
-void free_wp(WP *wp);
+WP *new_wp(bool *success);
+void free_wp(int ID);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -119,13 +119,26 @@ static int cmd_w(char *args) {
 	bool judge = 1;
 	uint32_t temp = expr(args, &judge);
 	if(!judge) {
-		printf("Error! New watchpoint isn't created!\n");
+		printf("Error! New watchpoint created failed!\n");
 		return 0;
 	}
-	WP *tmp = new_wp();
+	WP *tmp = new_wp(&judge);
+	if(!judge)
+		return 0;
 	tmp -> str = args;
 	tmp -> temp = temp;
 	printf("New watchpoint NO.%d is created\n",tmp -> NO);
+	return 0;
+}
+
+static int cmd_d(char *args) {
+	if(args == NULL) {
+		printf("Error! You need to input like this: d 1\n");
+		return 0;
+	}
+	int id;
+	sscanf(args, "%d", &id);
+	free_wp(id);
 	return 0;
 }
 
@@ -149,10 +162,11 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Make one step", cmd_si },
-	{ "info", "Get information from reg", cmd_info },
+	{ "info", "Get information from reg/watchpoints", cmd_info },
 	{ "x", "Scanf memory", cmd_x},
 	{ "p", "Calculation", cmd_p},
 	{ "w", "Set watchpoint", cmd_w},
+	{ "d", "Delete watchpoint", cmd_d},
 	/* TODO: Add more commands */
 
 };
