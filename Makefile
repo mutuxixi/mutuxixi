@@ -78,7 +78,7 @@ submit: clean
 COUNT_NEMU_Lines := $(shell cd nemu && find . -name "*[.h|.c]" | xargs grep -Ev "^$$" | wc -l)
 COUNT_NEMU_Lines_ADD :=$(shell expr $(COUNT_NEMU_Lines) - 2973)
 COUNT_NEMU_ALLLines := $(shell cd nemu && find . -name "*[.h|.c]" | xargs cat | wc -l)
-COUNT_NEMU_ALLLines_ADD := $(shell expr $(COUNT_NEMU_ALLLines) - 3376)
+COUNT_NEMU_ALLLines_ADD := $(shell expr $(COUNT_NEMU_ALLLines) - 3736)
 
 count:
 	@echo There are $(COUNT_NEMU_Lines) lines of code in nemu of this branch except empty line
