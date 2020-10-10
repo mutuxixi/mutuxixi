@@ -73,3 +73,18 @@ test: $(nemu_BIN) $(testcase_BIN) entry
 
 submit: clean
 	cd .. && zip -r $(STU_ID).zip $(shell pwd | grep -o '[^/]*$$')
+
+#####rules for counting lines of .c/.h in nemu #####
+COUNT_NEMU_Lines := $(shell cd nemu && find . -name "*[.h|.c]" | xargs grep -Ey "^$$" | wc -l)
+COUNT_NEMU_Lines_ADD :=$(shell expr $(COUNT_NEMU_Lines) - 2973)
+COUNT_NEMU_ALLLines := $(shell cd nemu && find . -name "*[.h|.c" | xargs cat wc -l)
+COUNT_NEMU_ALLLines_ADD := $(shell expr $(COUNT_NEMU_ALLLines) - 3376)
+
+count:
+	@echo There are $(COUNT_NEMU_Lines) lines of code in nemu of this branch except empty line
+	@echo There are $(COUNT_NEMU_Lines_ADD) lines added into the frame code
+
+countall:
+	@echo There are $(COUNT_NEMU_ALLLines) lines of code in nemu of this branch
+	@echo There are $(COUNT_NEMU_ALLLines_ADD) lines added into the frame code
+
