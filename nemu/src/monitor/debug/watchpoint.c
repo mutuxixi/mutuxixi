@@ -74,6 +74,7 @@ bool check_watchpoint() {
 		Cmp = expr(p -> str, &judge);
 		if(Cmp != p -> value) {
 			printf("Stop at watchpoint NO.%d\n",p -> NO);
+			p -> value = Cmp;
 			return 1;
 		}
 	}
