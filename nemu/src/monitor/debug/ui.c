@@ -93,7 +93,7 @@ static int cmd_x(char *args) {
 		int i;
 		for(i = 0;i < num; ++i)
 		{
-			printf("0x%08x:\t%0x08x\n",pos,swaddr_read(pos,4));
+			printf("0x%08x:\t0x%08x\n",pos,swaddr_read(pos,4));
 			pos += 4;
 		}
 	}
