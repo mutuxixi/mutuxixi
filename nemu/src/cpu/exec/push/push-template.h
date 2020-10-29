@@ -19,8 +19,11 @@ static void do_execute()
     print_asm_template1();
 }
 
-//#if DATA_BYTE == 2 || DATA_BYTE == 4
+make_instr_helper(i);
+
+#if DATA_BYTE == 2 || DATA_BYTE == 4
 make_instr_helper(r);
-//#endif
+make_instr_helper(rm);
+#endif
 
 #include "cpu/exec/template-end.h"
