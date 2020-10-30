@@ -276,7 +276,7 @@ long long eval(int p,int q) {
 		return eval(p + 1,q - 1);
 	}
 	else {
-		int i,op = -1,tmp[32],cnt = 0;
+		int i,op = -1,tmp[32],cnt = 0,temp = -1;
 		for(i = p;i <= q; ++i) {
 			if(tokens[i].type == '(') {
 				int j,judge = 1;
@@ -293,8 +293,13 @@ long long eval(int p,int q) {
 			}
 			if(tokens[i].type == '+' || tokens[i].type == '-' || tokens[i].type == '*' || tokens[i].type == '/')
 				tmp[cnt++]=i;
-			if(tokens[i].type == EQ || tokens[i].type == NEQ || tokens[i].type == AND || tokens[i].type == OR)
+			if(tokens[i].type == EQ || tokens[i].type == NEQ)
+				temp = i;
+			if(tokens[i].type == AND || tokens[i].type == OR)
 				op = i;
+		}
+		if(op == -1 && temp != -1) {
+			op = temp;
 		}
 		if(op == -1 && cnt) {
 			op = tmp[cnt - 1];
