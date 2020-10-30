@@ -38,3 +38,4 @@
 #include "data-mov/push.h"
 #include "data-mov/pop.h"
 #include "logic/test.h"
+#include "logic/setcc.h"
