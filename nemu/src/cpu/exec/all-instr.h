@@ -25,3 +25,17 @@
 #include "misc/misc.h"
 
 #include "special/special.h"
+
+#include "arith/cmp.h"
+#include "arith/add.h"
+#include "arith/adc.h"
+#include "arith/sub.h"
+#include "arith/sbb.h"
+#include "con-trans/call.h"
+#include "con-trans/ret.h"
+#include "con-trans/jcc.h"
+#include "con-trans/jmp.h"
+#include "data-mov/push.h"
+#include "data-mov/pop.h"
+#include "logic/test.h"
+#include "logic/setcc.h"
