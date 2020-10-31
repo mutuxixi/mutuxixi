@@ -7,3 +7,6 @@
 #include "setge.h"
 #include "setl.h"
 #include "setle.h"
+#include "setne.h"
+#include "setno.h"
+#include "setnp.h"
