@@ -10,3 +10,6 @@
 #include "setne.h"
 #include "setno.h"
 #include "setnp.h"
+#include "setns.h"
+#include "seto.h"
+#include "setp.h"
