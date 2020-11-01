@@ -40,3 +40,5 @@
 #include "logic/test.h"
 #include "logic/setcc.h"
 #include "string/movs.h"
+#include "string/stos.h"
+#include "string/lods.h"

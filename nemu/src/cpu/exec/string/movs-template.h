@@ -4,7 +4,7 @@
 
 make_helper(concat(movs_n_,SUFFIX))
 {
-    swaddr_write(reg_l(R_EDI), DATA_BYTE, swaddr_read(reg_l(R_ESI), DATA_BYTE));
+    MEM_W(reg_l(R_EDI), swaddr_read(reg_l(R_ESI), DATA_BYTE));
     if(!cpu.DF)
     {
         reg_l(R_EDI) += DATA_BYTE;
