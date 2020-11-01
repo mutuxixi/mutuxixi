@@ -37,6 +37,7 @@
 #include "con-trans/jmp.h"
 #include "data-mov/push.h"
 #include "data-mov/pop.h"
+#include "data-mov/leave.h"
 #include "logic/test.h"
 #include "logic/setcc.h"
 #include "string/movs.h"
