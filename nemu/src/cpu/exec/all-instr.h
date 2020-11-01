@@ -39,3 +39,4 @@
 #include "data-mov/pop.h"
 #include "logic/test.h"
 #include "logic/setcc.h"
+#include "string/movs.h"
