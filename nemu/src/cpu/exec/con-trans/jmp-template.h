@@ -6,7 +6,7 @@ static void do_execute()
 {
     DATA_TYPE_S displacement = op_src->val;
     if(op_src->type == OP_TYPE_IMM)
-        cpu.eip += displacement;
+        cpu.eip += displacement - 1;
     else
         cpu.eip = displacement - concat(decode_rm_,SUFFIX)(cpu.eip + 1) - 1;
     print_asm_template1();
