@@ -10,7 +10,7 @@ static void do_execute () {
 	//panic("please implement me");
 
 	int len = (DATA_BYTE << 3) - 1;
-	cpu.OF = result < op_src->val;
+	cpu.OF = result < op_dest->val;
     cpu.ZF = !result;
     cpu.SF = result >> len;
 
