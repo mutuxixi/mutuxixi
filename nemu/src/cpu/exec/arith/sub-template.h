@@ -4,11 +4,7 @@
 
 static void do_execute()
 {
-    DATA_TYPE result;
-    if(op_src->size == 1 && op_dest->size != 1)
-        result = op_dest->val - (int8_t)op_src->val;
-    else
-        result = op_dest->val - op_src->val;
+    DATA_TYPE result = op_dest->val - op_src->val;
     OPERAND_W(op_dest, result);
     int len = (DATA_BYTE << 3) - 1;
     int tmp1 = (op_dest->val) >> len;
