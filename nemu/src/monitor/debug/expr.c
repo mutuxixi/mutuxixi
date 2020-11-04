@@ -156,7 +156,7 @@ static bool make_token(char *e) {
 								}
 							}
 							if(strcmp("$eip", substr_start) == 0)
-								tokens[nr_token].str[0] = 4 + '0';
+								tokens[nr_token].str[0] = 4 + '0',printf("\n-1\n\n");
 						}
 						else {
 							for(j = 0;j < 8; ++j) {
