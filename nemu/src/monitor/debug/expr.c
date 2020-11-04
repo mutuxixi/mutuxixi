@@ -149,23 +149,23 @@ static bool make_token(char *e) {
 						int j;
 						if(substr_len == 4) {
 							for(j = 0;j < 8; ++j) {
-								if(strcmp(regsl[j], substr_start + 1) == 0) {
+								if(strncmp(regsl[j], substr_start + 1, 3) == 0) {
 									tokens[nr_token].str[0] = 1 + '0';
 									tokens[nr_token].str[1] = j + '0';
 									break;
 								}
 							}
-							if(strcmp("$eip", substr_start) == 0)
-								tokens[nr_token].str[0] = 4 + '0',printf("\n-1\n\n");
+							if(strncmp("eip", substr_start + 1, 3) == 0)
+								tokens[nr_token].str[0] = 4 + '0';
 						}
 						else {
 							for(j = 0;j < 8; ++j) {
-								if(strcmp(regsw[j], substr_start + 1) == 0) {
+								if(strncmp(regsw[j], substr_start + 1, 2) == 0) {
 									tokens[nr_token].str[0] = 2 + '0';
 									tokens[nr_token].str[1] = j + '0';
 									break;
 								}
-								if(strcmp(regsb[j], substr_start + 1) == 0) {
+								if(strncmp(regsb[j], substr_start + 1, 2) == 0) {
                                                                         tokens[nr_token].str[0] = 3 + '0';
                                                                         tokens[nr_token].str[1] = j + '0';
                                                                         break;
@@ -261,7 +261,6 @@ long long eval(int p,int q) {
 		else if(tokens[p].type == REG) {
 		/* REG */
 			int CMP = tokens[p].str[0] - '0', Index = tokens[p].str[1] - '0';
-			printf("CMP: %d\n",CMP);
 			switch (CMP) {
 				case 1 : temp =  reg_l(Index);break;
                                 case 2 : temp =  reg_w(Index);break;
