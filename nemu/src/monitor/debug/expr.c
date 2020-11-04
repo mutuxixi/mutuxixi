@@ -149,23 +149,23 @@ static bool make_token(char *e) {
 						int j;
 						if(substr_len == 4) {
 							for(j = 0;j < 8; ++j) {
-								if(strcmp(regsl[j], substr_start + 1) == 0) {
+								if(strncmp(regsl[j], substr_start + 1, 3) == 0) {
 									tokens[nr_token].str[0] = 1 + '0';
 									tokens[nr_token].str[1] = j + '0';
 									break;
 								}
 							}
-							if(strcmp("eip", substr_start + 1) == 0)
+							if(strncmp("eip", substr_start + 1, 3) == 0)
 								tokens[nr_token].str[0] = 4 + '0';
 						}
 						else {
 							for(j = 0;j < 8; ++j) {
-								if(strcmp(regsw[j], substr_start + 1) == 0) {
+								if(strncmp(regsw[j], substr_start + 1, 2) == 0) {
 									tokens[nr_token].str[0] = 2 + '0';
 									tokens[nr_token].str[1] = j + '0';
 									break;
 								}
-								if(strcmp(regsb[j], substr_start + 1) == 0) {
+								if(strncmp(regsb[j], substr_start + 1, 2) == 0) {
                                                                         tokens[nr_token].str[0] = 3 + '0';
                                                                         tokens[nr_token].str[1] = j + '0';
                                                                         break;
