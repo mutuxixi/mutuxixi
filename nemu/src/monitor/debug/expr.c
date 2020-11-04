@@ -155,7 +155,7 @@ static bool make_token(char *e) {
 									break;
 								}
 							}
-							if(strcmp("eip", substr_start + 1) == 0)
+							if(strcmp("$eip", substr_start) == 0)
 								tokens[nr_token].str[0] = 4 + '0';
 						}
 						else {
