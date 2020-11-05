@@ -108,7 +108,7 @@ static int cmd_p(char *args) {
 	bool judge = 1;
 	uint32_t ANS = expr(args,&judge);
 	if(judge)
-		printf("%d\n",ANS);
+		printf("%d\t(0x%x)\n",ANS,ANS);
 	return 0;
 }
 
