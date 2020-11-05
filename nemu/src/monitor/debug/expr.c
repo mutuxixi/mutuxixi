@@ -6,12 +6,15 @@
 #include <sys/types.h>
 #include <regex.h>
 
+uint32_t getVARval(char *, bool *);
+
 enum {
 	NOTYPE = 256, EQ = 257,
 	negative = 258, NEQ = 259,
 	h_num = 260, d_num = 261,
 	AND = 262, OR = 263,
-	INV = 264, DEREF = 265, REG = 266,
+	INV = 264, DEREF = 265,
+	REG = 266, VAR = 267,
 	/* TODO: Add more token types */
 
 };
@@ -24,21 +27,22 @@ static struct rule {
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
-        {" +",  NOTYPE},                                // spaces
+    {" +",  NOTYPE},                	// spaces
 	{"0x[a-z,0-9]+", h_num},			// hexadecimal-number
-        {"[0-9]+", d_num},                              // decimal-number
-	{"\\$[a-z]+", REG},				// REG
-	{"==", EQ},						// equal
+    {"[0-9]+", d_num},              	// decimal-number
+	{"\\$[a-z]+", REG},					// register
+	{"==", EQ},							// equal
 	{"!=", NEQ},						// not equal
 	{"&&", AND},						// AND
 	{"\\|\\|", OR},						// OR
-	{"!", INV},						// INV
-        {"\\+", '+'},                                   // plus
-	{"\\*", '*'},					// multiply
-	{"-", '-'},					// minus
-	{"/", '/'},					// divide
-	{"\\(", '('},					// left barket
-	{"\\)", ')'},					// right barket
+	{"!", INV},							// INV
+    {"\\+", '+'},                   	// plus
+	{"\\*", '*'},						// multiply
+	{"-", '-'},							// minus
+	{"/", '/'},							// divide
+	{"\\(", '('},						// left barket
+	{"\\)", ')'},						// right barket
+	{"[a-zA-Z_][a-zA-Z0-9_]*", VAR},	// variable
 
 };
 
@@ -100,52 +104,19 @@ static bool make_token(char *e) {
 				switch(rules[i].token_type) {
 					case NOTYPE :
 						break;
-					case '+': {
-						tokens[nr_token++].type = rules[i].token_type;
-						break;
-					}
-					case '-': {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-					case '*': {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-					case '/': {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-					case '(': {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-					case ')': {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case EQ: {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case NEQ: {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case AND: {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case OR: {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case INV: {
-                                                tokens[nr_token++].type = rules[i].token_type;
-                                                break;
-                                        }
-                                        case REG: {
-                                                tokens[nr_token].type = rules[i].token_type;
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+					case '(':
+					case ')':
+                	case EQ :
+                    case NEQ:
+                    case AND:
+                    case OR :
+                    case INV:tokens[nr_token++].type = rules[i].token_type;break;
+                    case REG: {
+                    	tokens[nr_token].type = rules[i].token_type;
 						int j;
 						if(substr_len == 4) {
 							for(j = 0;j < 8; ++j) {
@@ -166,27 +137,27 @@ static bool make_token(char *e) {
 									break;
 								}
 								if(strncmp(regsb[j], substr_start + 1, 2) == 0) {
-                                                                        tokens[nr_token].str[0] = 3 + '0';
-                                                                        tokens[nr_token].str[1] = j + '0';
-                                                                        break;
-                                                                }
+                                	tokens[nr_token].str[0] = 3 + '0';
+                                	tokens[nr_token].str[1] = j + '0';
+                                	break;
+                            	}
 							}
 						}
 						++nr_token;
 						break;
-                                        }
-                                        case h_num: {
-                                                tokens[nr_token].type = rules[i].token_type;
-                                                int j;
-                                                for(j = 0;j < 32; ++j)
-                                                        tokens[nr_token].str[j] = '0';
-                                                for(j = 0;j < substr_len - 2; ++j)
-                                                        tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
-                                                for(;j < 32; ++j)
-                                                        tokens[nr_token].str[31 - j] = '0';
-                                                ++nr_token;
-                                                break;
-                                        }
+                    }
+                    case h_num: {
+                        tokens[nr_token].type = rules[i].token_type;
+                        int j;
+                        for(j = 0;j < 32; ++j)
+                            tokens[nr_token].str[j] = '0';
+                        for(j = 0;j < substr_len - 2; ++j)
+                            tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
+                        for(;j < 32; ++j)
+                            tokens[nr_token].str[31 - j] = '0';
+                        ++nr_token;
+                        break;
+                    }
 					case d_num: {
 						tokens[nr_token].type = rules[i].token_type;
 						int j;
@@ -196,6 +167,12 @@ static bool make_token(char *e) {
 							tokens[nr_token].str[31 - j] = substr_start[substr_len - 1 - j];
 						for(;j < 32; ++j)
 							tokens[nr_token].str[31 - j] = '0';
+						++nr_token;
+						break;
+					}
+					case VAR: {
+						tokens[nr_token].type = rules[i].token_type;
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						++nr_token;
 						break;
 					}
@@ -259,14 +236,23 @@ long long eval(int p,int q) {
 				temp = temp * 10 + (long long)(tokens[p].str[i] - '0');
 		}
 		else if(tokens[p].type == REG) {
-		/* REG */
+		/* Register */
 			int CMP = tokens[p].str[0] - '0', Index = tokens[p].str[1] - '0';
 			switch (CMP) {
 				case 1 : temp =  reg_l(Index);break;
-                                case 2 : temp =  reg_w(Index);break;
-                                case 3 : temp =  reg_b(Index);break;
-                                case 4 : temp =  cpu.eip;break;
+                case 2 : temp =  reg_w(Index);break;
+                case 3 : temp =  reg_b(Index);break;
+                case 4 : temp =  cpu.eip;break;
 				default : assert(0);
+			}
+		}
+		else if(tokens[p].type == VAR) {
+		/* Variable */
+			bool success = 1;
+			temp = getVARval(tokens[p].str, &success);
+			if(!success) {
+				printf("Bad variable name %s !\n",tokens[p].str);
+				assert(0);
 			}
 		}
 		return temp;
@@ -373,7 +359,7 @@ uint32_t expr(char *e, bool *success) {
 	return eval(0, nr_token - 1);
 
 	/* TODO: Insert codes to evaluate the expression. */
-//	panic("please implement me");
-//	return 0;
+	//panic("please implement me");
+	//return 0;
 }
 
