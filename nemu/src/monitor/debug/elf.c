@@ -98,3 +98,17 @@ uint32_t getVARval(char *var, bool *success)
 	*success = 0;
 	return 0;
 }
+
+void getBT(swaddr_t eip, char *str)
+{
+	int i;
+	for(i = 0;i < nr_symtab_entry; ++i)
+	{
+		if(symtab[i].st_value <= eip && symtab[i].st_value + symtab[i].st_size >= eip && (symtab[i].st_info & 0xf) == STT_FUNC)
+		{
+			strcpy(str, strtab+symtab[i].st_name);
+			return ;
+		}
+	}
+	str[0] = '\0';
+}

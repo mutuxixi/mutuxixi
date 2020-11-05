@@ -8,6 +8,7 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
+void getBT(swaddr_t eip, char *str);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -152,6 +153,23 @@ static int cmd_d(char *args) {
 	return 0;
 }
 
+static int cmd_bt(char *args) {
+	swaddr_t ebp = cpu.ebp, eip = cpu.eip;
+	if(!ebp) {
+		printf("There is no stack link!\n");
+		return 0;
+	}
+	char str[100];
+	int cnt = 1;
+	for(;ebp;eip = swaddr_read(ebp + 4, 4), ebp = swaddr_read(ebp, 4), ++cnt) {
+		getBT(eip, str);
+		if(str[0] == '\0')	break;
+		printf("#%d\t0x%08x:\t%s\targ1: 0x%08x arg2: 0x%08x arg3: 0x%08x arg4: 0x%08x\n", cnt, eip, str,
+				swaddr_read(ebp+8,4), swaddr_read(ebp+12,4), swaddr_read(ebp+16,4), swaddr_read(ebp+20,4));
+	}
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -177,6 +195,7 @@ static struct {
 	{ "p", "Calculation", cmd_p},
 	{ "w", "Set watchpoint", cmd_w},
 	{ "d", "Delete watchpoint", cmd_d},
+	{ "bt", "Print the stack link", cmd_bt},
 	/* TODO: Add more commands */
 
 };
