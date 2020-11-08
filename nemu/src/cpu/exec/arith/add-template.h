@@ -13,7 +13,7 @@ static void do_execute()
     cpu.CF = result < op_dest->val;
     cpu.ZF = !result;
     cpu.SF = result >> len;
-    cpu.OF = (tmp1 != tmp2 && tmp2 == cpu.SF);
+    cpu.OF = (tmp1 == tmp2 && tmp2 != cpu.SF);
 
     result ^= result >> 4;
     result ^= result >> 2;
