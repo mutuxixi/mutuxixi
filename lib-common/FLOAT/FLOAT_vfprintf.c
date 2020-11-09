@@ -23,7 +23,8 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	for(i = 15; i >= 0; --i)
 	{
 		cnt >>= 1;
-		if((f >> i) & 1)	tmp2 += cnt;
+		if((f >> i) & 1)
+			tmp2 += cnt;
 	}
 	while(tmp2 > 999999)
 		tmp2 /= 10;
