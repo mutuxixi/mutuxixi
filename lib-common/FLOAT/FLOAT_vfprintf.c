@@ -34,11 +34,29 @@ static void modify_vfprintf() {
 	int *p = (int*)(addr + 0x306 + 1);
 	*p += (int)format_FLOAT - (int)(&_fpmaxtostr);
 
+	char *tmp;
 
+	/* fstpt -> pushl m */
+	tmp = (char*)(addr + 0x306 - 0xa);	// fstpt
+	*tmp = 0xff;						// pushl m
+	tmp = (char*)(addr + 0x306 - 0x9);
+	*tmp = 0x32;						// ModR/M 00 110 010
+	tmp = (char*)(addr + 0x306 - 0x8);
+	*tmp = 0x90;						//nop
 
+	/* sub c -> sub 8 */
+	tmp = (char*)(addr + 0x306 - 0xb);
+	*tmp = 0x08;
 
-
-
+	/* erase the float instr */
+	tmp = (char*)(addr + 0x306 - 0x22);
+	*tmp = 0x90;
+	tmp = (char*)(addr + 0x306 - 0x21);
+	*tmp = 0x90;
+	tmp = (char*)(addr + 0x306 - 0x1d);
+	*tmp = 0x90;
+	tmp = (char*)(addr + 0x306 - 0x1e);
+	*tmp = 0x90;
 
 #if 0
 	else if (ppfs->conv_num <= CONV_A) {  /* floating point */
