@@ -17,11 +17,20 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	 */
 	char buf[80];
 	int sign = (f >> 31) & 1;
+	if(sign)	f = (~f) + 1;	// abs(f)
+	int tmp1 = f >> 16;
+	int tmp2 = 0, i, len, cnt = 1e8;
+	for(i = 15; i >= 0; --i)
+	{
+		cnt >>= 1;
+		if((f >> i) & 1)	tmp2 += cnt;
+	}
+	while(tmp2 > 999999)
+		tmp2 /= 10;
 	if(sign)
-		f = (~f) + 1;
-
-
-	int len = sprintf(buf, "0x%08x", f);
+		len = sprintf(buf, "-%d.%06d", tmp1, tmp2);
+	else
+		len = sprintf(buf, "%d.%06d", tmp1, tmp2);
 	return __stdio_fwrite(buf, len, stream);
 }
 
