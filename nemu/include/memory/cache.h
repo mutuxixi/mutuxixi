@@ -38,9 +38,7 @@ Cache_L2 cache2[Cache_L2_Size/Cache_L2_Block_Size];
 void init_cache();
 int read_cache1(hwaddr_t);
 void write_cache1(hwaddr_t, size_t, uint32_t);
-void write_cache2(hwaddr_t, size_t, uint32_t);
 int read_cache2(hwaddr_t);
-
-int test_time;
+void write_cache2(hwaddr_t, size_t, uint32_t);
 
 #endif
