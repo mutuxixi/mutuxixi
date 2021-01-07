@@ -5,7 +5,7 @@
 make_helper(concat(scas_n_,SUFFIX))
 {
     swaddr_t Cmp1 = REG(R_EAX);
-    swaddr_t Cmp2 = MEM_R(reg_l(R_EDI));
+    swaddr_t Cmp2 = MEM_R(reg_l(R_EDI), R_ES);
     DATA_TYPE result = Cmp1 - Cmp2;
     if(!cpu.DF)
         reg_l(R_EDI) += DATA_BYTE;

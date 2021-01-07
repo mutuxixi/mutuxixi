@@ -94,7 +94,7 @@ static int cmd_x(char *args) {
 		int i;
 		for(i = 0;i < num; ++i)
 		{
-			printf("0x%08x:\t0x%08x\n",pos,swaddr_read(pos,4));
+			printf("0x%08x:\t0x%08x\n",pos,swaddr_read(pos,4,R_DS));
 			pos += 4;
 		}
 	}
@@ -161,11 +161,11 @@ static int cmd_bt(char *args) {
 	}
 	char str[100];
 	int cnt = 1;
-	for(;ebp;eip = swaddr_read(ebp + 4, 4), ebp = swaddr_read(ebp, 4), ++cnt) {
+	for(;ebp;eip = swaddr_read(ebp + 4, 4, R_SS), ebp = swaddr_read(ebp, 4, R_SS), ++cnt) {
 		getBT(eip, str);
 		if(str[0] == '\0')	break;
 		printf("#%d\t0x%08x:\t%s\targ1: 0x%08x arg2: 0x%08x arg3: 0x%08x arg4: 0x%08x\n", cnt, eip, str,
-				swaddr_read(ebp+8,4), swaddr_read(ebp+12,4), swaddr_read(ebp+16,4), swaddr_read(ebp+20,4));
+				swaddr_read(ebp+8,4,R_SS), swaddr_read(ebp+12,4,R_SS), swaddr_read(ebp+16,4,R_SS), swaddr_read(ebp+20,4,R_SS));
 	}
 	return 0;
 }

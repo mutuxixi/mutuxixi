@@ -42,3 +42,22 @@ void reg_test() {
 	assert(eip_sample == cpu.eip);
 }
 
+void sreg_load(uint8_t ID){
+	Assert(cpu.cr0.protect_enable,"Error! You Are Not In The Protect Mode!!");
+
+	uint16_t idx = cpu.sreg[ID].selector >> 3;
+
+	Assert((idx << 3) <= cpu.gdtr.limit,"Segement Selector Is Out Of Range!");
+
+	lnaddr_t chart_addr = cpu.gdtr.base + (idx << 3);
+	sreg_info->part1 = lnaddr_read(chart_addr, 4);
+	sreg_info->part2 = lnaddr_read(chart_addr + 4, 4);
+
+	Assert(sreg_info->p == 1, "Segement Not Exist!");
+	
+	cpu.sreg[ID].base = (uint32_t)sreg_info->base1 + (sreg_info->base2 << 16) + (sreg_info->base3 << 24);
+	cpu.sreg[ID].limit = (uint32_t)sreg_info->limit1 + (sreg_info->limit2 << 16) + (0xfff << 24);
+
+	if (sreg_info->g == 1)
+		cpu.sreg[ID].limit <<= 12;
+}

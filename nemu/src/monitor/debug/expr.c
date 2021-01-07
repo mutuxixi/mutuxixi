@@ -304,7 +304,7 @@ long long eval(int p,int q) {
 			else if(tokens[p].type == INV)
 				return !eval(p + 1,q);
 			else if(tokens[p].type == DEREF)
-				return swaddr_read(eval(p + 1,q),4);
+				return swaddr_read(eval(p + 1,q),4,R_DS);
 		}
 		long long val1, val2;
 		val1 = eval(p, op - 1);
