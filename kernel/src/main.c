@@ -1,6 +1,5 @@
 #include "common.h"
 #include "memory.h"
-#include <stdio.h>
 
 void init_page();
 void init_serial();
@@ -82,7 +81,7 @@ void init_cond() {
 	/* Load the program. */
 	uint32_t eip = loader();
 
-printf("\nTest1 eip: 0x%x\n\n",eip);
+Log("\nTest1 eip: 0x%x\n\n",eip);
 
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Read data in the video memory to check whether 
@@ -100,7 +99,7 @@ printf("\nTest1 eip: 0x%x\n\n",eip);
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
 
-printf("\nTest2 eip: 0x%x\n\n",eip);
+Log("\nTest2 eip: 0x%x\n\n",eip);
 
 	/* Keep the `bt' command happy. */
 	asm volatile("movl $0, %ebp");
