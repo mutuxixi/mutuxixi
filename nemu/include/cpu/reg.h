@@ -107,6 +107,24 @@ typedef struct{
 	};
 }SREG_INFO;
 
+typedef struct {
+	union{
+		struct{
+			uint32_t p 	:1;
+			uint32_t rw	:1;
+			uint32_t us	:1;
+			uint32_t pwt:1;
+			uint32_t pcd:1;
+			uint32_t a	:1;
+			uint32_t d 	:1;
+			uint32_t 	:2;
+			uint32_t avail	:3;
+			uint32_t addr 	:20;
+		};
+		uint32_t val;
+	};
+}PAGE_INFO;
+
 SREG_INFO *sreg_info;
 void sreg_load(uint8_t);
 
