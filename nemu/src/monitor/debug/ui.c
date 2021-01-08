@@ -9,6 +9,7 @@
 
 void cpu_exec(uint32_t);
 void getBT(swaddr_t eip, char *str);
+hwaddr_t cmd_page_translate(lnaddr_t addr);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -170,6 +171,18 @@ static int cmd_bt(char *args) {
 	return 0;
 }
 
+static int cmd_page(char* args) {
+	if(args == NULL) {
+		printf("Error! You need to input in this form: page ADDR\n");
+		return 0;
+	}
+	uint32_t addr;
+	sscanf(args, "%x", &addr);
+	hwaddr_t ans = cmd_page_translate(addr);
+	if(ans) printf("0x%08x -> 0x%08x\n",addr ,ans);
+	return 0;
+}
+
 static int cmd_c(char *args) {
 	cpu_exec(-1);
 	return 0;
@@ -196,6 +209,7 @@ static struct {
 	{ "w", "Set watchpoint", cmd_w},
 	{ "d", "Delete watchpoint", cmd_d},
 	{ "bt", "Print the stack link", cmd_bt},
+	{ "page", "Translate addr in page mode", cmd_page},
 	/* TODO: Add more commands */
 
 };
