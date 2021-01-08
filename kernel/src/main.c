@@ -80,9 +80,7 @@ void init_cond() {
 
 	/* Load the program. */
 	uint32_t eip = loader();
-
-Log("\nTest1 eip: 0x%x\n\n",eip);
-
+	
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Read data in the video memory to check whether 
 	 * the test data is written sucessfully.
@@ -98,8 +96,6 @@ Log("\nTest1 eip: 0x%x\n\n",eip);
 	 * convention of the "advanced" runtime environment. */
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
-
-Log("\nTest2 eip: 0x%x\n\n",eip);
 
 	/* Keep the `bt' command happy. */
 	asm volatile("movl $0, %ebp");
