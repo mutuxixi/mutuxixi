@@ -116,4 +116,7 @@ void restart() {
 
 	/* Initialize CS. */
 	init_CS();
+
+	/* Initialize TLB. */
+	init_TLB();
 }
