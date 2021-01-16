@@ -58,7 +58,7 @@ uint32_t pframe_addr = PHY_MEM - PAGE_SIZE;
 		ptable --;
 
 		// fill PTEs reversely
-		for (; pframe_addr >= 0; pframe_addr -= PAGE_SIZE) {
+		for (; pframe_addr > 0; pframe_addr -= PAGE_SIZE) {
 			ptable->val = make_pte(pframe_addr);
 			ptable --;
 		}
