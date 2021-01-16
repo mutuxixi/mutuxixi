@@ -54,14 +54,15 @@ void init_page(void) {
 		}
 	*/
 
-uint32_t pframe_addr = PHY_MEM - PAGE_SIZE;
-		ptable --;
+	uint32_t pframe_addr = PHY_MEM - PAGE_SIZE;
+	ptable --;
 
-		// fill PTEs reversely
-		for (; pframe_addr > 0; pframe_addr -= PAGE_SIZE) {
-			ptable->val = make_pte(pframe_addr);
-			ptable --;
-		}
+	// fill PTEs reversely
+	for (; pframe_addr > 0; pframe_addr -= PAGE_SIZE) {
+		ptable->val = make_pte(pframe_addr);
+		ptable --;
+	}
+	ptable->val = make_pte(pframe_addr);
 
 	/* make CR3 to be the entry of page directory */
 	cr3.val = 0;
